@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
@@ -36,5 +37,8 @@ Route::get('user/{id}/name/{name}', [UserController::class, 'showProfile'])->nam
 
 Route::get('transaction', [TransactionController::class, 'showTransaction'])->name('transaction.index');
 
-//JS 2 | Praktikum 4
+//JS 3 | Praktikum 4
 Route::get('/level', [LevelController::class, 'index']);
+
+//JS 3 | Praktikum 5
+Route::get('/kategori', [KategoriController::class, 'index']);
