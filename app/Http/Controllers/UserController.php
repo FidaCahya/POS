@@ -18,6 +18,23 @@ class UserController extends Controller
     
         public function index()
         {
+            //Praktikum 1 no 2 JS 4
+            // $data = [
+            //     'level_id' => 2,
+            //     'username' => 'manager_dua',
+            //     'nama' => 'Manager 2',
+            //     'password' => Hash::make('12345')
+            // ];
+
+            //Praktikum 1 no 5 JS 4
+            $data = [
+                'level_id' => 2,
+                'username' => 'manager_tiga',
+                'nama' => 'Manager 3',
+                'password' => Hash::make('12345')
+            ];
+            UserModel::create($data);
+
             // tambah data user dengan Eloquent Model
             //Praktkum 6 no 8 JS 3
             // $data = [
