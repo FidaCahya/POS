@@ -76,10 +76,34 @@ class UserController extends Controller
             // return view ('user', ['data' => $user]);
 
             //Praktikum 2.1 no 10 JS 4
-            $user = UserModel::findOr(2, ['username', 'nama'], function(){
-                abort(404);
-            });
+            // $user = UserModel::findOr(2, ['username', 'nama'], function(){
+            //     abort(404);
+            // });
+            // return view ('user', ['data' => $user]);
+        
+            // //Praktikum 2.2 no 1 JS 4
+            // $user = UserModel::findOrFail(1);
+            // return view ('user', ['data' => $user]);
+
+            // // //Praktikum 2.2 no 3 JS 4
+            // $user = UserModel::where('username', 'manager9')->firstOrFail();
+            // return view ('user', ['data' => $user]);
+
+            // //Praktikum 2.3 no 1 JS 4
+            $user = UserModel::where('level_id', 2)->count();
+            //dd($user);
             return view ('user', ['data' => $user]);
+            
+            // //Praktikum 2.3 no 3 JS 4
+            // Ambil total jumlah pengguna dengan level_id 2
+            $totalUsers = UserModel::where('level_id', 2)->count();
+
+            // Ambil daftar pengguna dengan level_id 2
+            $userList = UserModel::where('level_id', 2)->get();
+
+            return view('user', ['totalUsers' => $totalUsers, 'userList' => $userList]);
+
+            
         }
     
 }
