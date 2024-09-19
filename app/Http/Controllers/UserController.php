@@ -27,13 +27,13 @@ class UserController extends Controller
             // ];
 
             //Praktikum 1 no 5 JS 4
-            $data = [
-                'level_id' => 2,
-                'username' => 'manager_tiga',
-                'nama' => 'Manager 3',
-                'password' => Hash::make('12345')
-            ];
-            UserModel::create($data);
+            // $data = [
+            //     'level_id' => 2,
+            //     'username' => 'manager_tiga',
+            //     'nama' => 'Manager 3',
+            //     'password' => Hash::make('12345')
+            // ];
+            // UserModel::create($data);
 
             // tambah data user dengan Eloquent Model
             //Praktkum 6 no 8 JS 3
@@ -48,14 +48,38 @@ class UserController extends Controller
 
 
             //Praktikum 6 no 10 JS 3
-            $data = [
-                'nama' => 'Pelanggan Pertama',
-            ];
-            UserModel::where('username', 'customer-1')->update($data); //update data user
+            // $data = [
+            //     'nama' => 'Pelanggan Pertama',
+            // ];
+            // UserModel::where('username', 'customer-1')->update($data); //update data user
             
-            //coba model akses UserModul
-            $user = UserModel::all(); //ambil semua data dr tabel m_user
-            return view('user', ['data' => $user]);
+            // //coba model akses UserModul
+            // $user = UserModel::all(); //ambil semua data dr tabel m_user
+            // return view('user', ['data' => $user]);
+            
+            //Praktikum 2.1 no 1 JS 4
+            // $user = UserModel::find(1);
+            // return view ('user', ['data' => $user]);
+
+            //Praktikum 2.1 no 4 JS 4
+            // $user = UserModel::where('level_id',1)->first();
+            // return view ('user', ['data' => $user]);
+
+            //Praktikum 2.1 no 6 JS 4
+            // $user = UserModel::firstwhere('level_id',1);
+            // return view ('user', ['data' => $user]);
+            
+            //Praktikum 2.1 no 8 JS 4
+            // $user = UserModel::findOr(1, ['username', 'nama'], function(){
+            //     abort(404);
+            // });
+            // return view ('user', ['data' => $user]);
+
+            //Praktikum 2.1 no 10 JS 4
+            $user = UserModel::findOr(2, ['username', 'nama'], function(){
+                abort(404);
+            });
+            return view ('user', ['data' => $user]);
         }
     
 }
