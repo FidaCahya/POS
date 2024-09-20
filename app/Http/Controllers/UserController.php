@@ -90,20 +90,58 @@ class UserController extends Controller
             // return view ('user', ['data' => $user]);
 
             // //Praktikum 2.3 no 1 JS 4
-            $user = UserModel::where('level_id', 2)->count();
-            //dd($user);
-            return view ('user', ['data' => $user]);
+            // $user = UserModel::where('level_id', 2)->count();
+            // dd($user);
+            // return view ('user', ['data' => $user]);
             
-            // //Praktikum 2.3 no 3 JS 4
+            //Praktikum 2.3 no 3 JS 4
             // Ambil total jumlah pengguna dengan level_id 2
-            $totalUsers = UserModel::where('level_id', 2)->count();
+            //$totalUsers = UserModel::where('level_id', 2)->count();
 
             // Ambil daftar pengguna dengan level_id 2
-            $userList = UserModel::where('level_id', 2)->get();
+            //$userList = UserModel::where('level_id', 2)->get();
+            //return view('user', ['totalUsers' => $totalUsers, 'userList' => $userList]);
 
-            return view('user', ['totalUsers' => $totalUsers, 'userList' => $userList]);
+            //Praktikum 2.4 no 1 JS 4
+            // $user = UserModel::firstOrCreate(
+            //     [
+            //         'username' => 'manager',
+            //         'nama' => 'Manager',
+            //     ]
+            // );
+            // return view('user', ['data'=> $user]);
 
-            
+            //Praktikum 2.4 no 4 JS 4
+            // $user = UserModel::firstOrCreate(
+            //     [
+            //         'username' => 'manager22',
+            //         'nama' => 'Manager Dua Dua',
+            //         'password' => Hash::make('12345'),
+            //         'level_id' => 2
+            //     ],
+            // );
+
+            //Praktikum 2.4 no 6 JS 4
+            // $user = UserModel::firstOrNew(
+            //     [
+            //         'username' => 'manager',
+            //         'nama' => 'Manager',
+            //     ]
+            //     );
+
+            //Praktikum 2.4 no 8 & 10 JS 4
+            $user = UserModel::firstOrNew(
+                [
+                    'username' => 'manager33',
+                    'nama' => 'Manager Tiga Tiga',
+                    'password' => Hash::make('12345'),
+                    'level_id' => 2
+                ]
+            );
+            $user->save();
+
+            return view('user', ['data'=> $user]);
+
         }
     
 }
