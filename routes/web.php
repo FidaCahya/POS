@@ -45,3 +45,17 @@ Route::get('/kategori', [KategoriController::class, 'index']);
 
 //JS 3 | Praktikum 6
 Route::get ('/user', [UserController::class, 'index']);
+
+//Praktikum 2.6 no 5 JS 4
+Route::get('/user/tambah', [UserController::class, 'tambah']);
+
+//Praktikum 2.6 no 8 JS 4
+Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);
+
+//Praktikum 2.6 no 12 JS 4
+Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
+
+//Praktikum 2.6 no 15 JS 4
+Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
+
+Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
