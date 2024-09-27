@@ -185,4 +185,10 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    'aliases' => [
+    // Other aliases...
+    'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+],
+
+
 ];
