@@ -6,10 +6,11 @@ use App\Models\LevelModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 
-
+use function Laravel\Prompts\error;
 
 class UserController extends Controller
 {
@@ -360,9 +361,9 @@ class UserController extends Controller
             return view('user.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'user' => $user, 'level'=>$level,'activeMenu' => $activeMenu]);
         }
 
-        // Menyimpan perubahan data user
-        public function update(Request $request, string $id)
-        {
+            // Menyimpan perubahan data user
+            public function update(Request $request, string $id)
+            {
             $request->validate([
                 // username harus diisi, berupa string, minimal 3 karakter,
                 // dan bernilai unik di tabel m_user kolom username kecuali untuk user dengan id yang sedang diedit
@@ -400,4 +401,39 @@ class UserController extends Controller
                 }
             }
 
-    }
+            //Praktikum 1 JS 6
+            public function create_ajax(){
+                $level = LevelModel::select('level_id', 'level_nama')->get();
+                return view('user.create_ajax')
+                            ->with('level', $level);            }
+            
+            //Praktikum 1 JS 6
+            public function store_ajax(Request $request){
+                //cek apsakah request berupa ajax
+                if($request->ajax() || $request->wantsJson()){
+                    $rules = [
+                        'level_id' => 'required|integer', 
+                        'username' => 'required|string|min:3|unique:m_user,username',
+                        'nama' => 'required|string|max:100',
+                        'password'=> 'required|min:6'
+                    ];
+                    // use Illuminate\Support\Facades\Validator;
+                    $validator = Validator::make($request->all(), $rules);
+                    if($validator->fails()){
+                        return response()->json([
+                        'status' => false, // response status, false: error/gagal, true: berhasil
+                        'message' => 'Validasi Gagal',
+                        'msgField' => $validator->errors(), // pesan error validasi
+                        ]);
+                    }  
+                    
+                    UserModel::create($request->all());
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Data user berhasil disimpan'
+                    ]);
+                }
+                return redirect('/');
+            }
+        }
+        
