@@ -87,7 +87,7 @@ Route::group(['prefix' => 'level'], function () {
     Route::get('/create', [LevelController::class, 'create']);   //menampilkan hal form tambah user 
     Route::post('/', [LevelController::class, 'store']);         //menyimpan data user baru
     Route::get('/create_ajax', [LevelController::class, 'create_ajax']);   
-    Route::get('/ajax', [UserController::class, 'store_ajax']);  
+    Route::get('/ajax', [LevelController::class, 'store_ajax']);  
     Route::get('/{id}', [LevelController::class, 'show']);       //menampilkan detail user
     Route::get('/{id}/edit', [LevelController::class, 'edit']);  //menampilkan hal form edit user
     Route::put('/{id}', [LevelController::class, 'update']);     //menyimpan perubahan data user
