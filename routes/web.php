@@ -144,6 +144,7 @@ Route::group(['prefix' => 'supplier'], function(){
     Route::get('/create_ajax', [SupplierController::class, 'create_ajax']);
     Route::get('/ajax', [SupplierController::class, 'store_ajax']);  
     Route::get('/{id}', [SupplierController::class, 'show']);
+    Route::get('/{id}/show_ajax', [SupplierController::class, 'show_ajax']); 
     Route::get('/{id}/edit', [SupplierController::class, 'edit']);
     Route::put('/{id}', [SupplierController::class, 'update']);
     Route::get('/{id}/edit_ajax', [SupplierController::class, 'edit_ajax']);  //menampilkan hal form edit user
