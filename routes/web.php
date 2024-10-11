@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
@@ -9,6 +10,22 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
+
+//login
+Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam group ini harus login dulu
+    Route::get('/', [WelcomeController::class,'index']);
+});
+
+Route::pattern('id','[0-9]+'); // artinya ketikaada parameter {id}, maka harus berupa angka
+
+Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'postlogin']);
+Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
+
+
+Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam group ini harus 
+    //Route::get('/', [AuthController::class, 'login', 'postlogin']); //masukkan semua route yang perlu autentikasi di sini
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +79,7 @@ Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
 
 Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
 
+//Route::get('/', [AuthController::class, 'login']);
 Route::get('/', [WelcomeController::class, 'index']);
 Route::group(['prefix' => 'user'], function () {
     Route::get('/', [UserController::class, 'index']);          //menampilkan halaman awal user
@@ -80,8 +98,9 @@ Route::group(['prefix' => 'user'], function () {
     Route::delete('/{id}', [UserController::class, 'destroy']); //menghapus data user
 });
 
-Route::get('/level', [LevelController::class, 'index']);
-Route::group(['prefix' => 'level'], function () {
+//Route::get('/level', [LevelController::class, 'index']);
+//Route::group(['prefix' => 'level'], function () {
+Route::middleware(['authorize:ADM'])->group(function(){
     Route::get('/', [LevelController::class, 'index']);          //menampilkan halaman awal user
     Route::post('/list', [LevelController::class, 'list']);      //menampilkan data user dalam bentuk json untuk datatables
     Route::get('/create', [LevelController::class, 'create']);   //menampilkan hal form tambah user 
