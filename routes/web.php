@@ -156,7 +156,8 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::put('/barang/{id}/update_ajax', [BarangController::class, 'update_ajax']);     //menyimpan perubahan data user
         Route::get('/barang/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']); //Menampilkan halaman form edit user Ajax
         Route::delete('/barang/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);  //Menyimpan perubahan data user
-        Route::delete('/barang/{id}', [BarangController::class, 'destroy']);
+        Route::get('/barang/import', [BarangController::class, 'import']); //ajax form upload excel
+        Route::post('/barang/import_ajax', [BarangController::class, 'import_ajax']); //ajax import excel
     });
 
     //Route::group(['prefix' => 'supplier'], function(){
