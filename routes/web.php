@@ -122,6 +122,10 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::get('/level/{id}/delete_ajax', [LevelController::class, 'confirm_ajax']); //Menampilkan halaman form edit user Ajax
         Route::delete('/level/{id}/delete_ajax', [LevelController::class, 'delete_ajax']);  //Menyimpan perubahan data user
         Route::delete('/level/{id}', [LevelController::class, 'destroy']); //menghapus data user
+        Route::get('/level/import', [LevelController::class, 'import']); //ajax form upload excel
+        Route::post('/level/import_ajax', [LevelController::class, 'import_ajax']);
+        Route::get('/level/export_excel', [LevelController::class, 'export_excel']); //export excel
+        Route::get('/level/export_pdf', [LevelController::class, 'export_pdf']);
     });
 
     Route::middleware(['authorize:ADM,MNG'])->group(function() {
