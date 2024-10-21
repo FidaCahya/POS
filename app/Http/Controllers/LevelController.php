@@ -140,6 +140,12 @@ class LevelController extends Controller
         
     }
 
+    public function show_ajax(string $id)
+    {
+        $level = LevelModel::find($id);
+        return view('level.show_ajax', ['level' => $level]);
+    }
+
     //Praktikum 1 JS 6
     public function create_ajax(){
         //$level = LevelModel::select('level_id', 'level_nama')->get();
