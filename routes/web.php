@@ -193,5 +193,9 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::get('/supplier/{id}/delete_ajax', [SupplierController::class, 'confirm_ajax']); //Menampilkan halaman form edit user Ajax
         Route::delete('/supplier/{id}/delete_ajax', [SupplierController::class, 'delete_ajax']);
         Route::delete('/supplier/{id}', [SupplierController::class, 'destroy']);
+        Route::get('/supplier/import', [SupplierController::class, 'import']); //ajax form upload excel
+        Route::post('/supplier/import_ajax', [SupplierController::class, 'import_ajax']);
+        Route::get('/supplier/export_excel', [SupplierController::class, 'export_excel']); //export excel
+        Route::get('/supplier/export_pdf', [SupplierController::class, 'export_pdf']);
     });
 });
