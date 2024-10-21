@@ -91,6 +91,7 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::get('/user/create_ajax', [UserController::class, 'create_ajax']);   
         Route::get('/user/ajax', [UserController::class, 'store_ajax']);           
         Route::get('/user/{id}', [UserController::class, 'show']);       //menampilkan detail user
+        Route::get('/user/{id}/show_ajax', [UserController::class, 'show_ajax']); 
         Route::get('/user/{id}/edit', [UserController::class, 'edit']);  //menampilkan hal form edit user
         Route::put('/user/{id}', [UserController::class, 'update']);     //menyimpan perubahan data user
         Route::get('/user/{id}/edit_ajax', [UserController::class, 'edit_ajax']);  //menampilkan hal form edit user
@@ -115,6 +116,7 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::get('/level/create_ajax', [LevelController::class, 'create_ajax']);   
         Route::get('/level/ajax', [LevelController::class, 'store_ajax']);  
         Route::get('/level/{id}', [LevelController::class, 'show']);       //menampilkan detail user
+        Route::get('/level/{id}/show_ajax', [LevelController::class, 'show_ajax']); 
         Route::get('/level/{id}/edit', [LevelController::class, 'edit']);  //menampilkan hal form edit user
         Route::put('/level/{id}', [LevelController::class, 'update']);     //menyimpan perubahan data user
         Route::get('/level/{id}/edit_ajax', [LevelController::class, 'edit_ajax']);  //menampilkan hal form edit user
@@ -145,6 +147,10 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::get('/kategori/{id}/delete_ajax', [KategoriController::class, 'confirm_ajax']); //Menampilkan halaman form edit user Ajax
         Route::delete('/kategori/{id}/delete_ajax', [KategoriController::class, 'delete_ajax']);  //Menyimpan perubahan data user
         Route::delete('/kategori/{id}', [KategoriController::class, 'destroy']);
+        Route::get('/kategori/import', [KategoriController::class, 'import']); //ajax form upload excel
+        Route::post('/kategori/import_ajax', [KategoriController::class, 'import_ajax']);
+        Route::get('/kategori/export_excel', [KategoriController::class, 'export_excel']); //export excel
+        Route::get('/kategori/export_pdf', [KategoriController::class, 'export_pdf']);
     });
 
 
