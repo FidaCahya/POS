@@ -103,6 +103,8 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::post('/user/import_ajax', [UserController::class, 'import_ajax']);
         Route::get('/user/export_excel', [UserController::class, 'export_excel']); //export excel
         Route::get('/user/export_pdf', [UserController::class, 'export_pdf']);
+        Route::get('/user/profile', [UserController::class, 'showProfile'])->name('profile');
+        Route::post('/user/profile/upload', [UserController::class, 'uploadProfilePicture'])->name('profile.upload');
     });
 
 
