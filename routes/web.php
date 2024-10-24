@@ -24,65 +24,14 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::get('register', [AuthController::class, 'register']);
 Route::post('register', [AuthController::class, 'store']);
 
-
-
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-//Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Route::prefix('category')->group(function() {
-//     Route::get('food-beverage', [ProductController::class, 'foodBeverage'])->name('category.food-beverage');
-//     Route::get('beauty-health', [ProductController::class, 'beautyHealth'])->name('category.beauty-health');
-//     Route::get('home-care', [ProductController::class, 'homeCare'])->name('category.home-care');
-//     Route::get('baby-kid', [ProductController::class, 'babyKid'])->name('category.baby-kid');
-
-// });
- 
-//Route::get('user/{id}/name/{name}', [UserController::class, 'showProfile'])->name('user.profile');
-
-//Route::get('transaction', [TransactionController::class, 'showTransaction'])->name('transaction.index');
-
-//JS 3 | Praktikum 4
-//Route::get('/level', [LevelController::class, 'index']);
-
-//JS 3 | Praktikum 5
-//Route::get('/kategori', [KategoriController::class, 'index']);
-
-//JS 3 | Praktikum 6
-//Route::get ('/user', [UserController::class, 'index']);
-
-//Praktikum 2.6 no 5 JS 4
-Route::get('/user/tambah', [UserController::class, 'tambah']);
-
-//Praktikum 2.6 no 8 JS 4
-Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);
-
-//Praktikum 2.6 no 12 JS 4
-Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
-
-//Praktikum 2.6 no 15 JS 4
-Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
-
-Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
-
-//Route::get('/', [AuthController::class, 'login']);
-//Route::get('/', [WelcomeController::class, 'index']);
-//Route::group(['prefix' => 'user'], function () {
 Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam group ini harus login dulu
+    // Route untuk menampilkan profil
+    Route::get('/profile', [UserController::class, 'showProfile'])->name('profile');
+
+    Route::post('/profile/upload', [UserController::class, 'uploadProfilePicture'])->name('profile.upload');
+    Route::put('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
+    Route::post('/profile/change-password', [UserController::class, 'changePassword'])->name('profile.change-password');
+
     Route::get('/', [WelcomeController::class,'index']);
     
     Route::middleware(['authorize:ADM,MNG'])->group(function(){
@@ -91,7 +40,7 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::get('/user/create', [UserController::class, 'create']);   //menampilkan hal form tambah user 
         Route::post('/user', [UserController::class, 'store']);
         Route::get('/user/create_ajax', [UserController::class, 'create_ajax']);   
-        Route::get('/user/ajax', [UserController::class, 'store_ajax']);           
+        Route::post('/user/ajax', [UserController::class, 'store_ajax']);           
         Route::get('/user/{id}', [UserController::class, 'show']);       //menampilkan detail user
         Route::get('/user/{id}/show_ajax', [UserController::class, 'show_ajax']); 
         Route::get('/user/{id}/edit', [UserController::class, 'edit']);  //menampilkan hal form edit user
@@ -105,8 +54,9 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::post('/user/import_ajax', [UserController::class, 'import_ajax']);
         Route::get('/user/export_excel', [UserController::class, 'export_excel']); //export excel
         Route::get('/user/export_pdf', [UserController::class, 'export_pdf']);
-        Route::get('/user/profile', [UserController::class, 'showProfile'])->name('profile');
-        Route::post('/user/profile/upload', [UserController::class, 'uploadProfilePicture'])->name('profile.upload');
+        // Route::get('/user/profile', [UserController::class, 'showProfile'])->name('profile');
+        // Route::post('/user/profile/upload', [UserController::class, 'uploadProfilePicture'])->name('profile.upload');
+        // Route::post('/user/profile/edit_profile', [UserController::class, 'editProfile'])->name('profile.edit_profile');
     });
 
 
@@ -118,7 +68,7 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::get('/level/create', [LevelController::class, 'create']);   //menampilkan hal form tambah user 
         Route::post('/level', [LevelController::class, 'store']);         //menyimpan data user baru
         Route::get('/level/create_ajax', [LevelController::class, 'create_ajax']);   
-        Route::get('/level/ajax', [LevelController::class, 'store_ajax']);  
+        Route::post('/level/ajax', [LevelController::class, 'store_ajax']);  
         Route::get('/level/{id}', [LevelController::class, 'show']);       //menampilkan detail user
         Route::get('/level/{id}/show_ajax', [LevelController::class, 'show_ajax']); 
         Route::get('/level/{id}/edit', [LevelController::class, 'edit']);  //menampilkan hal form edit user
@@ -141,7 +91,7 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::get('/kategori/create', [KategoriController::class, 'create']);
         Route::post('/kategori', [KategoriController::class, 'store']);
         Route::get('/kategori/create_ajax', [KategoriController::class, 'create_ajax']);
-        Route::get('/kategori/ajax', [KategoriController::class, 'store_ajax']);  
+        Route::post('/kategori/ajax', [KategoriController::class, 'store_ajax']);  
         Route::get('/kategori/{id}', [KategoriController::class, 'show']);
         Route::get('/kategori/{id}/show_ajax', [KategoriController::class, 'show_ajax']); 
         Route::get('/kategori/{id}/edit', [KategoriController::class, 'edit']);
@@ -165,7 +115,7 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::get('/barang/create', [BarangController::class, 'create']);
         Route::post('/barang', [BarangController::class, 'store']);
         Route::get('/barang/create_ajax', [BarangController::class, 'create_ajax']);
-        Route::get('/barang/ajax', [BarangController::class, 'store_ajax']);  
+        Route::post('/barang/ajax', [BarangController::class, 'store_ajax']);  
         Route::get('/barang/{id}', [BarangController::class, 'show']);
         Route::get('/barang/{id}/show_ajax', [BarangController::class, 'show_ajax']); 
         Route::get('/barang/{id}/edit', [BarangController::class, 'edit']);
@@ -187,7 +137,7 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::get('/supplier/create', [SupplierController::class, 'create']);
         Route::post('/supplier', [SupplierController::class, 'store']);
         Route::get('/supplier/create_ajax', [SupplierController::class, 'create_ajax']);
-        Route::get('/supplier/ajax', [SupplierController::class, 'store_ajax']);  
+        Route::post('/supplier/ajax', [SupplierController::class, 'store_ajax']);  
         Route::get('/supplier/{id}', [SupplierController::class, 'show']);
         Route::get('/supplier/{id}/show_ajax', [SupplierController::class, 'show_ajax']); 
         Route::get('/supplier/{id}/edit', [SupplierController::class, 'edit']);
@@ -207,7 +157,7 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
         Route::get('/stok', [StokController::class, 'index']);
         Route::post('/stok/list', [StokController::class, 'list']);
         Route::get('/stok/create', [StokController::class, 'create']);
-        Route::post('/stok', [StokController::class, 'store']);
+        // Route::post('/stok', [StokController::class, 'store']);
         Route::get('/stok/create_ajax', [StokController::class, 'create_ajax']);
         Route::post('/stok/ajax', [StokController::class, 'store_ajax']);  
         Route::get('/stok/{id}', [StokController::class, 'show']);
@@ -226,26 +176,20 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
     
     });
 
-        Route::middleware(['authorize:ADM,MNG'])->group(function(){
+
+        Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
         Route::get('/penjualan', [PenjualanController::class, 'index']);
-        Route::post('/penjualan/list', [PenjualanController::class, 'list']);
-        Route::get('/penjualan/create', [PenjualanController::class, 'create']);
-        Route::post('/penjualan', [PenjualanController::class, 'store']);
+        Route::post('/penjualan/list', [PenjualanController::class, 'list'])->name('penjualan.list');
         Route::get('/penjualan/create_ajax', [PenjualanController::class, 'create_ajax']);
-        Route::post('/penjualan/ajax', [PenjualanController::class, 'store_ajax']);  
-        Route::get('/penjualan/{id}', [PenjualanController::class, 'show']);
-        Route::get('/penjualan/{id}/show_ajax', [PenjualanController::class, 'show_ajax']); 
-        Route::get('/penjualan/{id}/edit', [PenjualanController::class, 'edit']);
-        Route::put('/penjualan/{id}', [PenjualanController::class, 'update']);
-        Route::get('/penjualan/{id}/edit_ajax', [PenjualanController::class, 'edit_ajax']);  //menampilkan hal form edit user
-        Route::put('/penjualan/{id}/update_ajax', [PenjualanController::class, 'update_ajax']);     //menyimpan perubahan data user
-        Route::get('/penjualan/{id}/delete_ajax', [PenjualanController::class, 'confirm_ajax']); //Menampilkan halaman form edit user Ajax
+        Route::post('/penjualan/store_ajax', [PenjualanController::class, 'store_ajax']);
+        Route::get('/penjualan/{id}/show_ajax', [PenjualanController::class, 'show_ajax']);
+        Route::get('/penjualan/{id}/edit_ajax', [PenjualanController::class, 'edit_ajax']);
+        Route::put('/penjualan/{id}/update_ajax', [PenjualanController::class, 'update_ajax']);
+        Route::get('/penjualan/{id}/delete_ajax', [PenjualanController::class, 'confirm_ajax']);
         Route::delete('/penjualan/{id}/delete_ajax', [PenjualanController::class, 'delete_ajax']);
-        Route::delete('/penjualan/{id}', [PenjualanController::class, 'destroy']);
-        Route::get('/penjualan/import', [PenjualanController::class, 'import']); //ajax form upload excel
         Route::post('/penjualan/import_ajax', [PenjualanController::class, 'import_ajax']);
-        Route::get('/penjualan/export_excel', [PenjualanController::class, 'export_excel']); //export excel
+        Route::get('/penjualan/export_excel', [PenjualanController::class, 'export_excel']);
         Route::get('/penjualan/export_pdf', [PenjualanController::class, 'export_pdf']);
+    });
     
     });
-});
