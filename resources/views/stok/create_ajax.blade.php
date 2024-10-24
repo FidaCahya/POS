@@ -1,61 +1,40 @@
-@empty($stok)
 <form action="{{ url('/stok/ajax') }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Stok Barang</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Stok</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                <!-- Kategori Stok Barang (Supplier) -->
-                <div class="form-group">
-                    <label>Kategori Supplier</label>
-                    <select name="supplier_id" class="form-control form-control-sm filter_supplier" required>
-                        <option value="">- Semua -</option>
-                        @foreach($supplier as $l)
-                            <option value="{{ $l->supplier_id }}">{{ $l->supplier_nama }}</option>
-                        @endforeach
-                    </select>
-                    <small id="error-supplier_id" class="error-text form-text text-danger"></small>
-                </div>
-                
-                <!-- Nama Barang -->
                 <div class="form-group">
                     <label>Nama Barang</label>
-                    <select name="barang_id" class="form-control" required>
+                    <select name="barang_id" id="barang_id" class="form-control" required>
                         <option value="">- Pilih Barang -</option>
-                        @foreach($barang as $b)
-                            <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
+                        @foreach ($barang as $l)
+                            <option value="{{ $l->barang_id }}">{{ $l->barang_nama }}</option>
                         @endforeach
                     </select>
                     <small id="error-barang_id" class="error-text form-text text-danger"></small>
                 </div>
-                <!-- Nama User -->
                 <div class="form-group">
                     <label>Nama User</label>
-                    <select name="user_id" class="form-control" required>
+                    <select name="user_id" id="user_id" class="form-control" required>
                         <option value="">- Pilih User -</option>
-                        @foreach($user as $u)
-                            <option value="{{ $u->user_id }}">{{ $u->nama }}</option>
+                        @foreach ($user as $l)
+                            <option value="{{ $l->user_id }}">{{ $l->username }}</option>
                         @endforeach
                     </select>
                     <small id="error-user_id" class="error-text form-text text-danger"></small>
                 </div>
-
-                <!-- Tanggal -->
                 <div class="form-group">
-                    <label>Tanggal</label>
-                    <input type="date" name="stok_tanggal" id="stok_tanggal" class="form-control" required>
+                    <label>Tanggal Stok</label>
+                    <input value="" type="datetime-local" name="stok_tanggal" id="stok_tanggal" class="form-control" required>
                     <small id="error-stok_tanggal" class="error-text form-text text-danger"></small>
                 </div>
-
-                <!-- Jumlah Stok -->
                 <div class="form-group">
                     <label>Jumlah Stok</label>
-                    <input type="number" name="stok_jumlah" id="stok_jumlah" class="form-control" required>
+                    <input value="" type="number" name="stok_jumlah" id="stok_jumlah" class="form-control" required>
                     <small id="error-stok_jumlah" class="error-text form-text text-danger"></small>
                 </div>
             </div>
@@ -66,17 +45,39 @@
         </div>
     </div>
 </form>
-@endempty
 
 <script>
     $(document).ready(function() {
+        // Membuka modal dengan benar
+        $('#myModal').on('show.bs.modal', function (e) {
+            // Menghapus aria-hidden pada modal agar dapat diakses
+            $(this).removeAttr('aria-hidden');
+        });
+
+        // Menutup modal dengan benar
+        $('#myModal').on('hide.bs.modal', function (e) {
+            // Mengembalikan aria-hidden ke elemen di luar modal
+            $('.wrapper').attr('aria-hidden', 'true');
+        });
+
         $("#form-tambah").validate({
             rules: {
-                barang_id :{ required: true },
-                supplier_id :{ required: true },
-                user_id :{ required: true },
-                stok_tanggal : { required: true, date: true },
-                stok_jumlah : { required: true, number: true }
+                barang_id: {
+                    required: true,
+                    number: true
+                },
+                user_id: {
+                    required: true,
+                    number: true
+                },
+                stok_tanggal: {
+                    required: true,
+                    date: true
+                },
+                stok_jumlah: {
+                    required: true,
+                    number: true
+                }
             },
             submitHandler: function(form) {
                 $.ajax({
@@ -91,7 +92,7 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            dataStok.ajax.reload(); 
+                            dataUser.ajax.reload();
                         } else {
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {
@@ -103,16 +104,9 @@
                                 text: response.message
                             });
                         }
-                    },
-                    error: function(xhr) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Terjadi Kesalahan',
-                            text: 'Silakan coba lagi nanti.'
-                        });
                     }
                 });
-                return false; // Prevent the default form submission
+                return false;
             },
             errorElement: 'span',
             errorPlacement: function(error, element) {
@@ -123,8 +117,7 @@
                 $(element).addClass('is-invalid');
             },
             unhighlight: function(element, errorClass, validClass) {
-                $(el
-                ement).removeClass('is-invalid');
+                $(element).removeClass('is-invalid');
             }
         });
     });

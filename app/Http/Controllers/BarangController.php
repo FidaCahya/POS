@@ -30,22 +30,26 @@ class BarangController extends Controller
     //Ambil data barang dalam bentuk json untuk datatables
     public function list(Request $request)
     {
+        // Select specific columns from the BarangModel and include the 'kategori' relationship
         $barang = BarangModel::select('barang_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual', 'kategori_id')
-            ->with('kategori');
-        //Filter data barang berdasarkan kategori_id
-        if($request->kategori_id){
-            $barang->where('kategori_id',$request->kategori_id);
+            ->with('kategori'); // Load the related kategori model
+        
+        // Apply filter based on the 'kategori_id' if it is provided in the request
+        if($request->filter_kategori){
+            $barang->where('kategori_id', $request->filter_kategori);
         }
+
+        // Use DataTables to process the query and return JSON data
         return DataTables::of($barang)
-            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
-            ->addColumn('aksi', function ($barang) { // menambahkan kolom aksi
+            ->addIndexColumn() // Add index column (DT_RowIndex)
+            ->addColumn('aksi', function ($barang) { // Add 'aksi' (action) column with buttons
                 $btn = '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
-                    return $btn;
+                return $btn;
             })
-            ->rawColumns(['aksi']) 
-            ->make(true);
+            ->rawColumns(['aksi']) // Ensure the 'aksi' column is not escaped and rendered as HTML
+            ->make(true); // Return the processed data to DataTables
     }
 
     //Menampilkan halaman form tambah barang
@@ -227,19 +231,32 @@ class BarangController extends Controller
         }
         return redirect('/');
     }
-    public function confirm_ajax(string $id)
-    {
-        $barang = BarangModel::find($id);
-        return view('barang.confirm_ajax', ['barang' => $barang]);
-    }
-    public function delete_ajax(string $id)
-    {
-        if (BarangModel::destroy($id)) {
-            return response()->json(['status' => true, 'message' => 'Data barang berhasil dihapus']);
-        } else {
-            return response()->json(['status' => false, 'message' => 'Data barang gagal dihapus']);
-        }
-    }
+    public function confirm_ajax($id) 
+    { 
+        $barang = BarangModel::find($id); 
+        return view('barang.confirm_ajax', ['barang' => $barang]); 
+    } 
+    
+    public function delete_ajax(Request $request, $id) 
+    { 
+        if($request->ajax() || $request->wantsJson()){ 
+            $barang = BarangModel::find($id); 
+            if($barang){ // jika sudah ditemuikan 
+                $barang->delete(); // barang di hapus 
+                return response()->json([ 
+                    'status' => true, 
+                    'message' => 'Data berhasil dihapus' 
+                ]); 
+            }else{ 
+                return response()->json([ 
+                    'status' => false, 
+                    'message' => 'Data tidak ditemukan' 
+                ]); 
+            } 
+        } 
+        return redirect('/'); 
+    }    
+    
     public function import()
     {
         return view('barang.import');

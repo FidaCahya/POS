@@ -1,13 +1,12 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\StokModelModel;
+
 use App\Models\BarangModel;
-use App\Models\kategoriModel;
 use App\Models\StokModel;
 use App\Models\SupplierModel;
-use App\Models\SupplierModelModel;
 use App\Models\UserModel;
+use App\Models\KategoriModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -74,7 +73,7 @@ class StokController extends Controller
         $page =(object)[
             'title'=>'Tambah Stok Barang baru'
         ];
-        $kategori = kategoriModel::all();
+        $kategori = KategoriModel::all();
         $activeMenu = 'kategori';
         return view('stok.create',['breadcrumb'=>$breadcrumb,'page'=>$page,'activeMenu'=>$activeMenu,'kategori'=>$kategori]);
     }
@@ -153,7 +152,7 @@ class StokController extends Controller
                 'supplier_id' => 'required|integer',
                 'barang_id' => 'required|integer',
                 'user_id' => 'required|integer',
-                'stok_tanggal' => 'required|date_format:Y-m-d H:i:s',
+                'stok_tanggal' => 'required|date',
                 'stok_jumlah' => 'required|integer',
                 ];
                 // use Illuminate\Support\Facades\Validator;
