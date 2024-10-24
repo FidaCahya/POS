@@ -20,6 +20,24 @@ use function Laravel\Prompts\error;
 
 class UserController extends Controller
 {
+        public function index()
+        {
+            $breadcrumb = (object) [
+                'title' => 'Daftar User',
+                'list' => ['Home', 'User']
+            ];
+
+            $page = (object) [
+                'title' => 'Daftar user yang terdaftar dalam sistem'
+            ];
+
+            $activeMenu = 'user';   // set menu yang sedang aktif
+
+            $level = LevelModel::all();     // ambil data level untuk filter level
+
+            return view('user.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'level' => $level, 'activeMenu' => $activeMenu]);
+        }
+
         public function create() {
 
         $breadcrumb = (object) [

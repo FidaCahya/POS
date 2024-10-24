@@ -1,15 +1,17 @@
 @extends('layouts.tamplate')
+
 @section('content')
 <div class="card">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Daftar barang</h3>
-            <div class="card-tools">
-                <button onclick="modalAction('{{ url('/barang/import') }}')" class="btn btn-info">Import Barang</button>
-                <a href="{{ url('/barang/export_excel') }}" class="btn btn-primary"><i class="fa fa-fileexcel"></i> Export Barang</a>
-                <a href="{{ url('/barang/export_pdf') }}" class="btn btn-warning"><i class="fa fa-filepdf"></i> Export Barang (PDF)</a>
-                <button onclick="modalAction('{{ url('/barang/create_ajax') }}')" class="btn btn-success">Tambah Data (Ajax)</button>
+    <div class="card-header">
+        <h3 class="card-title">Daftar Stok</h3>
+        <div class="card-tools">
+            <button onclick="modalAction('{{ url('/stok/import') }}')" class="btn btn-info">Import Stok Barang</button>
+            <a href="{{ url('/stok/export_excel') }}" class="btn btn-primary"><i class="fa fa-fileexcel"></i> Export Stok Barang</a>
+            <a href="{{ url('/stok/export_pdf') }}" class="btn btn-warning"><i class="fa fa-filepdf"></i> Export Stok Barang (PDF)</a>
+            <button onclick="modalAction('{{ url('/stok/create_ajax') }}')" class="btn btn-success">Tambah Data (Ajax)</button>
+        </div>
     </div>
+
     <div class="card-body">
         <!-- Filter Data -->
         <div id="filter" class="form-horizontal filter-date p-2 border-bottom mb-2">
@@ -18,13 +20,13 @@
                     <div class="form-group form-group-sm row text-sm mb-0">
                         <label for="filter_date" class="col-md-1 col-form-label">Filter</label>
                         <div class="col-md-3">
-                            <select name="filter_kategori" class="form-control form-control-sm filter_kategori">
+                            <select name="filter_supplier" class="form-control form-control-sm filter_supplier">
                                 <option value="">- Semua -</option>
-                                @foreach($kategori as $l)
-                                    <option value="{{ $l->kategori_id }}">{{ $l->kategori_nama }}</option>
+                                @foreach($supplier as $l)
+                                    <option value="{{ $l->supplier_id }}">{{ $l->supplier_nama }}</option>
                                 @endforeach
                             </select>
-                            <small class="form-text text-muted">Kategori Barang</small>
+                            <small class="form-text text-muted">Kategori Supplier Barang</small>
                         </div>
                     </div>
                 </div>
@@ -40,15 +42,15 @@
         @endif
 
         <!-- Table -->
-        <table id="table-barang" class="table table-striped">
+        <table id="table-stok" class="table table-striped">
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Kode Barang</th>
                     <th>Nama Barang</th>
-                    <th>Harga Beli</th>
-                    <th>Harga Jual</th>
-                    <th>Kategori</th>
+                    <th>Nama Supplier</th>
+                    <th>Nama User</th>
+                    <th>Tanggal</th>
+                    <th>Jumlah Stok</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -68,17 +70,17 @@
         });
     }
 
-    var tableBarang;
+    var tableStok;
     $(document).ready(function() {
-        tableBarang = $('#table-barang').DataTable({
+        tableStok = $('#table-stok').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ url('barang/list') }}",
+                url: "{{ url('stok/list') }}",
                 dataType: "json",
                 type: "POST",
                 data: function (d) {
-                    d.filter_kategori = $('.filter_kategori').val();
+                    d.filter_supplier = $('.filter_supplier').val();
                 }
             },
             columns: [
@@ -90,13 +92,6 @@
                     searchable: false
                 },
                 {
-                    data: "barang_kode",
-                    className: "",
-                    width: "10%",
-                    orderable: true,
-                    searchable: true
-                },
-                {
                     data: "barang_nama",
                     className: "",
                     width: "37%",
@@ -104,27 +99,46 @@
                     searchable: true
                 },
                 {
-                    data: "harga_beli",
+                    data: "supplier_nama",
+                    className: "",
+                    width: "37%",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "nama",
+                    className: "",
+                    width: "37%",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "stok_tanggal",
                     className: "",
                     width: "10%",
                     orderable: true,
                     searchable: false,
                     render: function(data, type, row) {
-                        return new Intl.NumberFormat('id-ID').format(data);
+                        if (data) {
+                            const date = new Date(data);
+                            if (!isNaN(date.getTime())) {
+                                const options = { 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric', 
+                                    hour: '2-digit', 
+                                    minute: '2-digit', 
+                                    second: '2-digit',
+                                    hour12: false 
+                                };
+                                return date.toLocaleString('id-ID', options);
+                            }
+                        }
+                        return ''; // If data is empty or invalid
                     }
                 },
                 {
-                    data: "harga_jual",
-                    className: "",
-                    width: "10%",
-                    orderable: true,
-                    searchable: false,
-                    render: function(data, type, row) {
-                        return new Intl.NumberFormat('id-ID').format(data);
-                    }
-                },
-                {
-                    data: "kategori.kategori_nama",
+                    data: "stok_jumlah",
                     className: "",
                     width: "14%",
                     orderable: true,
@@ -140,14 +154,14 @@
             ]
         });
 
-        $('#table-barang_filter input').unbind().bind().on('keyup', function(e) {
+        $('#table-stok_filter input').unbind().bind().on('keyup', function(e) {
             if (e.keyCode == 13) {
-                tableBarang.search(this.value).draw();
+                tableStok.search(this.value).draw();
             }
         });
 
-        $('.filter_kategori').change(function() {
-            tableBarang.draw();
+        $('.filter_supplier').change(function() {
+            tableStok.draw();
         });
     });
 </script>
