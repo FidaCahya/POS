@@ -402,25 +402,58 @@ class UserController extends Controller
                         'title' => 'Profile',
                         'list' => ['Home']
                     ];
-                    return view('profile', compact('user', 'activeMenu', 'breadcrumb'));
+                    return view('profile.profile', compact('user', 'activeMenu', 'breadcrumb'));
                 }
                 public function uploadProfilePicture(Request $request)
                 {
                     $request->validate([
                         'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                     ]);
+                    
                     $user = Auth::user();
-                    // Hapus gambar profil lama jika ada
+
+                    // Delete old avatar if exists
                     if ($user->avatar) {
                         Storage::delete($user->avatar);
                     }
 
                     $path = $request->file('avatar')->store('avatar');
 
-                    // Update path di database
+                    // Update path in the database
                     $user->avatar = $path;
                     $user->save();
+                    
                     return redirect()->route('profile')->with('success', 'Profile picture updated successfully.');
                 }
-               
-    }
+
+                public function updateProfile(Request $request)
+                {
+                    $request->validate([
+                        'username' => 'required|string|min:3|unique:m_user,username,' . Auth::id() . ',user_id',
+                        'nama'     => 'required|string|max:100',
+                    ]);
+
+                    $user = Auth::user();
+                    $user->update([
+                        'username' => $request->username,
+                        'nama'     => $request->nama,
+                    ]);
+
+                    return redirect()->route('profile')->with('success', 'Profile updated successfully.');
+                }
+
+                // Change user password
+                public function changePassword(Request $request)
+                {
+                    $request->validate([
+                        'password' => 'required|confirmed|min:6',
+                    ]);
+
+                    $user = Auth::user();
+                    $user->update([
+                        'password' => bcrypt($request->password),
+                    ]);
+
+                    return redirect()->route('profile')->with('success', 'Password changed successfully.');
+                }
+}
