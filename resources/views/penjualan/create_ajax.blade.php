@@ -32,6 +32,38 @@
                     <input value="" type="datetime-local" name="penjualan_tanggal" id="penjualan_tanggal" class="form-control" required>
                     <small id="error-password" class="error-text form-text text-danger"></small>
                 </div>
+
+                <div class="form-group">
+                    <label>Detail Penjualan</label>
+                    <table id="detail-table" class="table">
+                        <thead>
+                            <tr>
+                                <th>Nama Barang</th>
+                                <th>Harga</th>
+                                <th>Jumlah</th>
+                                <th>Total</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <select name="detail[0][barang_id]" class="form-control barang-select" required>
+                                        <option value="">- Pilih Barang -</option>
+                                        @foreach ($barang as $b) <!-- Pastikan menggunakan $b -->
+                                            <option value="{{ $b->barang_id }}" data-harga="{{ $b->harga_jual }}">{{ $b->barang_nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td><input type="number" name="detail[0][harga]" class="form-control harga" required readonly></td>
+                                <td><input type="number" name="detail[0][jumlah]" class="form-control jumlah" required></td>
+                                <td><input type="number" name="detail[0][total]" class="form-control total" readonly></td>
+                                <td><button type="button" class="btn btn-danger remove-row">Hapus</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" id="add-row" class="btn btn-primary">Tambah Detail</button>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
@@ -40,8 +72,10 @@
         </div>
     </div>
 </form>
+
 <script>
     $(document).ready(function() {
+        // Validasi untuk form utama
         $("#form-tambah").validate({
             rules: {
                 user_id: {
@@ -103,6 +137,49 @@
             unhighlight: function(element, errorClass, validClass) {
                 $(element).removeClass('is-invalid');
             }
+        });
+
+        // Fungsi untuk menambahkan dan menghapus baris detail
+        let rowCount = 1;
+        $('#add-row').click(function() {
+            $('#detail-table tbody').append(`
+                <tr>
+                    <td>
+                        <select name="detail[${rowCount}][barang_id]" class="form-control barang-select" required>
+                            <option value="">- Pilih Barang -</option>
+                            @foreach ($barang as $item)
+                                <option value="{{ $item->id }}" data-harga="{{ $item->harga }}">{{ $item->nama }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td><input type="number" name="detail[${rowCount}][harga]" class="form-control harga" required readonly></td>
+                    <td><input type="number" name="detail[${rowCount}][jumlah]" class="form-control jumlah" required></td>
+                    <td><input type="number" name="detail[${rowCount}][total]" class="form-control total" readonly></td>
+                    <td><button type="button" class="btn btn-danger remove-row">Hapus</button></td>
+                </tr>
+            `);
+            rowCount++;
+        });
+
+        $(document).on('change', '.barang-select', function() {
+            let harga = $(this).find('option:selected').data('harga');
+            $(this).closest('tr').find('.harga').val(harga);
+            calculateTotal($(this).closest('tr'));
+        });
+
+        $(document).on('change', '.jumlah', function() {
+            calculateTotal($(this).closest('tr'));
+        });
+
+        function calculateTotal(tr) {
+            let harga = tr.find('.harga').val();
+            let jumlah = tr.find('.jumlah').val();
+            let total = harga * jumlah;
+            tr.find('.total').val(total);
+        }
+
+        $(document).on('click', '.remove-row', function() {
+            $(this).closest('tr').remove();
         });
     });
 </script>

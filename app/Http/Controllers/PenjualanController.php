@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PenjualanModel;
+use App\Models\BarangModel;
 use App\Models\PenjualanDetailModel;
 use App\Models\UserModel;
 use Yajra\DataTables\Facades\DataTables;
@@ -79,8 +80,10 @@ class PenjualanController extends Controller
     public function create_ajax()
     {
         $user = UserModel::select('user_id', 'nama')->get();
-        return view('penjualan.create_ajax')->with('user', $user);
+        $barang = BarangModel::select('barang_id', 'barang_nama', 'harga_jual')->get(); // Ambil data barang
+        return view('penjualan.create_ajax', compact('user', 'barang')); // Kirim data barang ke view
     }
+
     public function store_ajax(Request $request)
     {
         // Cek apakah request berupa ajax atau ingin JSON
@@ -90,28 +93,35 @@ class PenjualanController extends Controller
                 'pembeli' => 'required|string|max:50',
                 'penjualan_kode' => 'required|string|max:20|unique:t_penjualan,penjualan_kode',
                 'penjualan_tanggal' => 'required|date',
+                'detail' => 'required|array', // Pastikan ada detail penjualan
+                'detail.*.barang_id' => 'required|integer', // Validasi barang_id
+                'detail.*.harga' => 'required|numeric', // Validasi harga
+                'detail.*.jumlah' => 'required|integer|min:1', // Validasi jumlah
             ];
-
-            // Gunakan Validator dari Illuminate\Support\Facades\Validator;
+    
             $validator = Validator::make($request->all(), $rules);
-            // Jika validasi gagal
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => false, // response status, false: error/gagal, true: berhasil
+                    'status' => false,
                     'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors(), // pesan error validasi
+                    'msgField' => $validator->errors(),
                 ]);
             }
-            // Simpan data user
-            PenjualanModel::create($request->all());
-
-            // Jika berhasil
+    
+            // Simpan data penjualan
+            $penjualan = PenjualanModel::create($request->only(['user_id', 'pembeli', 'penjualan_kode', 'penjualan_tanggal']));
+    
+            // Simpan detail penjualan
+            foreach ($request->detail as $item) {
+                $item['penjualan_id'] = $penjualan->penjualan_id; // Menambahkan penjualan_id ke detail
+                PenjualanDetailModel::create($item); // Simpan detail penjualan
+            }
+    
             return response()->json([
                 'status' => true,
-                'message' => 'Data stok berhasil disimpan',
+                'message' => 'Data penjualan berhasil disimpan',
             ]);
         }
-        // Redirect jika bukan request Ajax
         return redirect('/');
     }
 
@@ -172,9 +182,15 @@ class PenjualanController extends Controller
 
     public function confirm_ajax(string $id)
     {
-        $penjualan = PenjualanModel::find($id);
+    $penjualan = PenjualanModel::find($id);
 
-        return view('penjualan.confirm_ajax', ['penjualan' => $penjualan]);
+    // Assuming $user refers to authenticated user data, include it if needed
+    $user = auth()->user();
+
+    return view('penjualan.confirm_ajax', [
+        'penjualan' => $penjualan,
+        'user' => $user,  // Pass $user if used in the view
+    ]);
     }
 
     public function delete_ajax(Request $request, $id)
