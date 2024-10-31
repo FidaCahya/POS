@@ -21,10 +21,11 @@ Route::pattern('id','[0-9]+'); // artinya ketikaada parameter {id}, maka harus b
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postlogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
-Route::get('register', [AuthController::class, 'register']);
-Route::post('register', [AuthController::class, 'store']);
+//Route::get('register', [AuthController::class, 'register']);
+//Route::post('register', [AuthController::class, 'store']);
 
 Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam group ini harus login dulu
+    Route::get('/', [WelcomeController::class,'index']);
     // Route untuk menampilkan profil
     Route::get('/profile', [UserController::class, 'showProfile'])->name('profile');
 
@@ -32,7 +33,7 @@ Route::middleware(['auth'])->group(function(){ //artinya semua route di dalam gr
     Route::put('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/change-password', [UserController::class, 'changePassword'])->name('profile.change-password');
 
-    Route::get('/', [WelcomeController::class,'index']);
+    
     
     Route::middleware(['authorize:ADM,MNG'])->group(function(){
         Route::get('/user', [UserController::class, 'index']);          //menampilkan halaman awal user
