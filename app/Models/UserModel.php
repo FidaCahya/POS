@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class UserModel extends  Authenticatable implements JWTSubject
 {
@@ -22,20 +22,13 @@ class UserModel extends  Authenticatable implements JWTSubject
     }
     
     use HasFactory;
-
     protected $table = 'm_user';    //mendefinisikan nama tabel yang digunakan oleh model ini
     protected $primaryKey = 'user_id';  //Mendefinisikan primary key dari tabel yang digunakan
-    protected $fillable = ['level_id','username', 'nama', 'password', 'avatar', 'created_at', 'updated_at'];
+    protected $fillable = ['level_id','username', 'nama', 'password','image', 'avatar', 'created_at', 'updated_at'];
     
     protected $hidden = ['password']; //jangan di tampilkan saat select
     protected $casts = ['password' => 'hashed']; //casting password agar otomatis di hash
-    /**
-     * The attributes that are mass assignable.
-     *
-     * 
-     */
     
-
     public function level(): BelongsTo{
         return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
     }
@@ -52,5 +45,11 @@ class UserModel extends  Authenticatable implements JWTSubject
     {
         return $this->level->level_kode;
     }
-
+    public function image(): Attribute
+    {
+        return Attribute::make(
+            get:fn($image) =>url('/storage/posts' . $image),
+        );
+        
+    }
 }

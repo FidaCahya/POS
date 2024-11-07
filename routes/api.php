@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\LogoutControllerController;
+use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\LevelController;
@@ -9,8 +9,10 @@ use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\BarangController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\PenjualanController;
 
-Route::post('/register', App\http\Controllers\Api\RegisterController:: class)->name('register');
+Route::post('/register1', App\http\Controllers\Api\RegisterController:: class)->name('register1');
+
 Route::post('/login', App\http\Controllers\Api\LoginController:: class)->name('login');
 Route::post('/logout', App\http\Controllers\Api\LogoutController:: class)->name('logout');
 
@@ -42,3 +44,6 @@ Route::post('barangs', [BarangController::class, 'store']);
 Route::get('barangs/{barang}', [BarangController::class, 'show']);
 Route::put('/barangs/{barang}', [BarangController::class, 'update']);
 Route::delete('/barangs/{barang}', [BarangController::class, 'destroy']);
+
+Route::post('penjualans', [PenjualanController::class, 'store']);
+Route::get('penjualans/{penjualan}', [PenjualanController::class, 'show']);
